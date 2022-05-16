@@ -118,7 +118,7 @@ public class Permissions extends CordovaPlugin {
     }
 
     private void requestPermissionAction(CallbackContext callbackContext, JSONArray args) throws Exception {
-        if (permissions == null || args.length() == 1) {
+        if (args == null || args.length() == 1) {
             JSONObject returnObj = new JSONObject();
             addProperty(returnObj, KEY_ERROR, ACTION_REQUEST_PERMISSION);
             addProperty(returnObj, KEY_MESSAGE, "At least one permission.");
