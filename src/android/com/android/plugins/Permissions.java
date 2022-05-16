@@ -25,7 +25,7 @@ public class Permissions extends CordovaPlugin {
     private static final String ACTION_REQUEST_PERMISSION = "requestPermission";
     private static final String ACTION_REQUEST_PERMISSIONS = "requestPermissions";
 
-    private static int REQUEST_CODE_ENABLE_PERMISSION = 0;
+    private static int REQUEST_CODE_ENABLE_PERMISSION = 1;
     private static int ACTION_MANAGE_OVERLAY_PERMISSION_REQUEST_CODE = 5469; // For SYSTEM_ALERT_WINDOW
 
     private static final String KEY_ERROR = "error";
@@ -155,8 +155,7 @@ public class Permissions extends CordovaPlugin {
                     return;
                 }
             }
-            forceRequest = args.getBoolean(1);
-            cordova.requestPermission(this, ++REQUEST_CODE_ENABLE_PERMISSION, args.getString(0));
+            cordova.requestPermission(this, REQUEST_CODE_ENABLE_PERMISSION, args.getString(0));
     }
     private String[] getPermissions(JSONArray permissions) {
         String[] stringArray = new String[permissions.length()];
