@@ -25,12 +25,14 @@ public class Permissions extends CordovaPlugin {
     private static final String ACTION_REQUEST_PERMISSION = "requestPermission";
     private static final String ACTION_REQUEST_PERMISSIONS = "requestPermissions";
 
-    private static final int REQUEST_CODE_ENABLE_PERMISSION = 55433;
+    private static int REQUEST_CODE_ENABLE_PERMISSION = 0;
     private static int ACTION_MANAGE_OVERLAY_PERMISSION_REQUEST_CODE = 5469; // For SYSTEM_ALERT_WINDOW
 
     private static final String KEY_ERROR = "error";
     private static final String KEY_MESSAGE = "message";
     private static final String KEY_RESULT_PERMISSION = "hasPermission";
+    
+    private static boolean forceRequest = false;
 
     private CallbackContext permissionsCallback;
 
@@ -43,7 +45,7 @@ public class Permissions extends CordovaPlugin {
                 }
             });
             return true;
-        } else if (ACTION_REQUEST_PERMISSION.equals(action) || ACTION_REQUEST_PERMISSIONS.equals(action)) {
+        } else if (ACTION_REQUEST_PERMISSION.equals(action)) {
             cordova.getThreadPool().execute(new Runnable() {
                 public void run() {
                     try {
@@ -115,8 +117,8 @@ public class Permissions extends CordovaPlugin {
         }
     }
 
-    private void requestPermissionAction(CallbackContext callbackContext, JSONArray permissions) throws Exception {
-        if (permissions == null || permissions.length() == 0) {
+    private void requestPermissionAction(CallbackContext callbackContext, JSONArray args) throws Exception {
+        if (permissions == null || args.length() == 1) {
             JSONObject returnObj = new JSONObject();
             addProperty(returnObj, KEY_ERROR, ACTION_REQUEST_PERMISSION);
             addProperty(returnObj, KEY_MESSAGE, "At least one permission.");
@@ -125,14 +127,18 @@ public class Permissions extends CordovaPlugin {
             JSONObject returnObj = new JSONObject();
             addProperty(returnObj, KEY_RESULT_PERMISSION, true);
             callbackContext.success(returnObj);
-        } else if (hasAllPermissions(permissions)) {
+        } else if (_hasPermission(args.getString(0))) {
             JSONObject returnObj = new JSONObject();
             addProperty(returnObj, KEY_RESULT_PERMISSION, true);
             callbackContext.success(returnObj);
         } else {
-            permissionsCallback = callbackContext;
-            String[] permissionArray = getPermissions(permissions);
-            if (permissionArray.length == 1 && "android.permission.SYSTEM_ALERT_WINDOW".equals(permissionArray[0])) {
+            requestDialog(callbackContext, args);
+        }
+    }
+    private void requestDialog(CallbackContext callbackContext, JSONArray args) throws Exception {
+           permissionsCallback = callbackContext;
+            //String[] permissionArray = getPermissions(args.getString(0));
+            if ("android.permission.SYSTEM_ALERT_WINDOW".equals(args.getString(0))) {
                 Log.i(TAG, "Request permission SYSTEM_ALERT_WINDOW");
 
                 Activity activity = this.cordova.getActivity();
@@ -149,10 +155,9 @@ public class Permissions extends CordovaPlugin {
                     return;
                 }
             }
-            cordova.requestPermissions(this, REQUEST_CODE_ENABLE_PERMISSION, permissionArray);
-        }
+            forceRequest = args.getBoolean(1);
+            cordova.requestPermission(this, ++REQUEST_CODE_ENABLE_PERMISSION, args.getString(0));
     }
-
     private String[] getPermissions(JSONArray permissions) {
         String[] stringArray = new String[permissions.length()];
         for (int i = 0; i < permissions.length(); i++) {
@@ -179,7 +184,12 @@ public class Permissions extends CordovaPlugin {
 
         return true;
     }
-
+    private boolean _hasPermission(String permission) throws Exception {
+        if(!cordova.hasPermission(permission)) {
+            return false;
+        }
+        return true;
+    }
     private void addProperty(JSONObject obj, String key, Object value) {
         try {
             if (value == null) {
