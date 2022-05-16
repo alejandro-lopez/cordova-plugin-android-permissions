@@ -173,9 +173,8 @@ Permissions.prototype = {
         if (typeof permission === "function") {
             deprecated("requestPermission");
             successCallback = arguments[0];
-            force = arguments[1];
-            errorCallback = arguments[2];
-            permission = arguments[3];
+            errorCallback = arguments[1];
+            permission = arguments[2];
             
         }
         cordova.exec(successCallback, errorCallback, permissionsName, 'requestPermission', [permission]);
