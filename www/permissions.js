@@ -178,10 +178,10 @@ Permissions.prototype = {
             permission = arguments[3];
             
         }
-        cordova.exec(successCallback, errorCallback, permissionsName, 'requestPermission', [permission], force);
+        cordova.exec(successCallback, errorCallback, permissionsName, 'requestPermission', [permission,force]);
     },
     requestPermissions: function(permissions, force, successCallback, errorCallback) {
-        cordova.exec(successCallback, errorCallback, permissionsName, 'requestPermissions', permissions, force);
+        cordova.exec(successCallback, errorCallback, permissionsName, 'requestPermissions', permissions);
     }
 };
 
