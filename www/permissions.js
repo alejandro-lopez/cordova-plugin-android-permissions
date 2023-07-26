@@ -83,8 +83,8 @@ function Permissions() {
     this.LOCATION_HARDWARE = 'android.permission.LOCATION_HARDWARE';
     this.MANAGE_ACCOUNTS = 'android.permission.MANAGE_ACCOUNTS';
     this.MANAGE_APP_TOKENS = 'android.permission.MANAGE_APP_TOKENS';
-    this.MANAGE_EXTERNAL_STORAGE = 'android.permission.MANAGE_EXTERNAL_STORAGE';
     this.MANAGE_DOCUMENTS = 'android.permission.MANAGE_DOCUMENTS';
+    this.MANAGE_EXTERNAL_STORAGE = 'android.permission.MANAGE_EXTERNAL_STORAGE';
     this.MASTER_CLEAR = 'android.permission.MASTER_CLEAR';
     this.MEDIA_CONTENT_CONTROL = 'android.permission.MEDIA_CONTENT_CONTROL';
     this.MODIFY_AUDIO_SETTINGS = 'android.permission.MODIFY_AUDIO_SETTINGS';
